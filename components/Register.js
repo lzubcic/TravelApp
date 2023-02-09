@@ -30,7 +30,15 @@ const Register = ({navigation}) => (
           },
         );
       }}>
-      {({handleChange, handleBlur, handleSubmit, status, values, errors}) => (
+      {({
+        handleChange,
+        handleSubmit,
+        handleBlur,
+        status,
+        values,
+        touched,
+        errors,
+      }) => (
         <>
           {status && <Text style={styles.errorText}>{status}</Text>}
           <Input
@@ -38,14 +46,14 @@ const Register = ({navigation}) => (
             onChangeText={handleChange('username')}
             onBlur={handleBlur('username')}
             value={values.username}
-            errorMessage={errors.username}
+            errorMessage={touched.username && errors.username}
           />
           <Input
             label="Password"
             onChangeText={handleChange('password')}
             onBlur={handleBlur('password')}
             value={values.password}
-            // errorMessage={errors.password}
+            errorMessage={touched.password && errors.password}
             secureTextEntry={true}
           />
           <Input
@@ -53,14 +61,14 @@ const Register = ({navigation}) => (
             onChangeText={handleChange('firstName')}
             onBlur={handleBlur('firstName')}
             value={values.firstName}
-            errorMessage={errors.firstName}
+            errorMessage={touched.firstName && errors.firstName}
           />
           <Input
             label="Last name"
             onChangeText={handleChange('lastName')}
             onBlur={handleBlur('lastName')}
             value={values.lastName}
-            errorMessage={errors.lastName}
+            errorMessage={touched.lastName && errors.lastName}
           />
           <Button mode="contained" onPress={handleSubmit}>
             Register

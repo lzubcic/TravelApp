@@ -10,7 +10,7 @@ const getUser = async () => {
     requestOptions,
   )
     .then(authenticationService.handleResponse)
-    .catch(err => console.log(err));
+    .catch(err => console.log('No user', err));
 };
 
 const addUser = (username, password, firstName, lastName) => {

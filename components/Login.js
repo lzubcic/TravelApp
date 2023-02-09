@@ -4,7 +4,6 @@ import {Formik} from 'formik';
 import * as yup from 'yup';
 import {Button, Input} from '@rneui/base';
 import {authenticationService} from '../services/authentication.service';
-import jwtDecode from 'jwt-decode';
 
 const loginSchema = yup.object({
   username: yup.string().required('Username is required'),
@@ -34,7 +33,15 @@ const Login = ({navigation}) => {
             },
           );
         }}>
-        {({handleChange, handleBlur, handleSubmit, status, values, errors}) => (
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          status,
+          values,
+          touched,
+          errors,
+        }) => (
           <>
             {status && <Text style={styles.errorText}>{status}</Text>}
             <Input
@@ -42,14 +49,14 @@ const Login = ({navigation}) => {
               onChangeText={handleChange('username')}
               onBlur={handleBlur('username')}
               value={values.username}
-              errorMessage={errors.username}
+              errorMessage={touched.username && errors.username}
             />
             <Input
               label="Password"
               onChangeText={handleChange('password')}
               onBlur={handleBlur('password')}
               value={values.password}
-              // errorMessage={errors.password}
+              errorMessage={touched.password && errors.password}
               secureTextEntry={true}
             />
             <Button mode="contained" onPress={handleSubmit}>

@@ -41,30 +41,18 @@ const App = () => {
           headerTitleStyle: {
             color: '#0275d8',
             fontSize: 28,
-            fontFamily: 'serif',
+            fontFamily: 'sans-serif-medium',
           },
           headerRight: () => (
             <View style={styles.buttons}>
               {!!currentUser ? (
-                <>
-                  {isAdmin && (
-                    <Icon
-                      name="add"
-                      size={32}
-                      type="material"
-                      onPress={() => navigation.navigate('Create Travel')}
-                      style={styles.newTravelIcon}
-                      color="#fff"
-                    />
-                  )}
-                  <Icon
-                    name="person"
-                    size={32}
-                    type="material"
-                    color="#0275d8"
-                    onPress={() => navigation.navigate('Profile')}
-                  />
-                </>
+                <Icon
+                  name="person"
+                  size={32}
+                  type="material"
+                  color="#0275d8"
+                  onPress={() => navigation.navigate('Profile')}
+                />
               ) : (
                 <Icon
                   name={'login'}
@@ -81,7 +69,7 @@ const App = () => {
         <Stack.Screen
           name="Travels"
           component={TravelList}
-          initialParams={{isAdmin: isAdmin}}
+          initialParams={{isAdmin: isAdmin, currentUser: currentUser}}
         />
         <Stack.Screen name="Details" component={TravelDetails} />
         <Stack.Screen name="Login" component={Login} />

@@ -2,8 +2,20 @@ import {Modal, View, StyleSheet, Alert} from 'react-native';
 import {Formik} from 'formik';
 import {Button, Input} from '@rneui/base';
 import {travelService} from '../../services/travel.service';
+import {useState} from 'react';
 
 const FilterModal = ({modalVisible, setModalVisible, setTravels}) => {
+  const [transport, setTransport] = useState(null);
+  const checkTransport = t => t === transport;
+  const setFilter = (t, setFieldValue) => {
+    if (t === transport) {
+      setTransport(null);
+      setFieldValue('transportation', null);
+    } else {
+      setTransport(t);
+      setFieldValue('transportation', t);
+    }
+  };
   return (
     <Modal
       animationType="slide"
@@ -25,6 +37,7 @@ const FilterModal = ({modalVisible, setModalVisible, setTravels}) => {
                 travels => {
                   setTravels(travels);
                   setSubmitting(false);
+                  setTransport(null);
                   setModalVisible(!modalVisible);
                 },
                 error => {
@@ -53,21 +66,21 @@ const FilterModal = ({modalVisible, setModalVisible, setTravels}) => {
                 <View style={styles.transportation}>
                   <Button
                     title="Bus"
-                    type="clear"
+                    type={checkTransport('BUS') ? 'solid' : 'clear'}
                     style={styles.transportationBtn}
-                    onPress={() => setFieldValue('transportation', 'BUS')}
+                    onPress={() => setFilter('BUS', setFieldValue)}
                   />
                   <Button
                     title="Train"
-                    type="clear"
+                    type={checkTransport('TRAIN') ? 'solid' : 'clear'}
                     style={styles.transportationBtn}
-                    onPress={() => setFieldValue('transportation', 'TRAIN')}
+                    onPress={() => setFilter('TRAIN', setFieldValue)}
                   />
                   <Button
                     title="Plane"
-                    type="clear"
+                    type={checkTransport('PLANE') ? 'solid' : 'clear'}
                     style={styles.transportationBtn}
-                    onPress={() => setFieldValue('transportation', 'PLANE')}
+                    onPress={() => setFilter('PLANE', setFieldValue)}
                   />
                 </View>
                 <Button onPress={handleSubmit}>Search</Button>

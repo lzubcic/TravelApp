@@ -17,7 +17,6 @@ const filterTravels = (text, price, transportation) => {
       ? (requestURL += `transportation=${transportation}`)
       : (requestURL += `?transportation=${transportation}`);
   }
-  console.log('RequestURL', requestURL);
   return fetch(requestURL)
     .then(authenticationService.handleResponse)
     .then(travels => {

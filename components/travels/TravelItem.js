@@ -29,7 +29,7 @@ const TravelItem = ({travel, handlePress, cancel}) => {
             size="md"
             color="error"
             containerStyle={styles.detailsBtn}
-            onPress={() => handlePress(travel.id)}
+            onPress={handlePress}
           />
         ) : (
           <Button

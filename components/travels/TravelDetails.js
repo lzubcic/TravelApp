@@ -7,16 +7,20 @@ import {userService} from '../../services/user.service';
 import Loading from '../Loading';
 
 const TravelDetails = ({navigation, route}) => {
-  const {travelId, isAdmin} = route.params;
+  const {travelId, routeIsAdmin} = route.params;
+  const [isAdmin, setIsAdmin] = useState(routeIsAdmin);
   const [travel, setTravel] = useState(null);
   const [user, setUser] = useState(null);
 
-  const fetchUser = async () => {
-    const fetchedUser = await userService.getUser();
-    const user = await fetchedUser;
-
-    return user;
-  };
+  const fetchUser = useCallback(async () => {
+    const currentUser = await userService.getUser();
+    const isAdmin = currentUser?.authorities.some(
+      auth => auth === 'ROLE_ADMIN',
+    );
+    setIsAdmin(isAdmin);
+    setUser(currentUser);
+    return currentUser;
+  }, []);
 
   const fetchTravel = useCallback(async () => {
     const fetchedTravel = await fetch(
@@ -35,13 +39,26 @@ const TravelDetails = ({navigation, route}) => {
         .then(
           async user => await userService.bookTravel(user.id, travel.id, token),
         )
-        .then(() => navigation.navigate('Profile'));
+        .then(() => {
+          navigation.navigate('Travels');
+          Alert.alert(
+            'Success!',
+            "You have successfully booked a travel. Click on 'VIEW' and see it in your profile.",
+            [
+              {text: 'View', onPress: () => navigation.navigate('Profile')},
+              {text: 'OK'},
+            ],
+          );
+        });
     }
   };
 
   useEffect(() => {
     fetchTravel();
-    fetchUser().then(user => setUser(user));
+    fetchUser();
+  }, [fetchTravel, fetchUser]);
+
+  useEffect(() => {
     isAdmin &&
       navigation.setOptions({
         headerRight: () => (
@@ -59,8 +76,9 @@ const TravelDetails = ({navigation, route}) => {
                     {
                       text: 'Yes',
                       onPress: () => {
-                        travelService.deleteTravel(travelId);
-                        navigation.navigate('Travels');
+                        travelService
+                          .deleteTravel(travelId)
+                          .then(() => navigation.navigate('Travels'));
                       },
                     },
                     {
@@ -82,7 +100,7 @@ const TravelDetails = ({navigation, route}) => {
           </>
         ),
       });
-  }, [fetchTravel, isAdmin, travel]);
+  }, [isAdmin, travel]);
 
   if (!travel) {
     return <Loading />;
@@ -105,7 +123,7 @@ const TravelDetails = ({navigation, route}) => {
         <Text style={styles.price}>{travel.price}€</Text>
 
         <>
-          {travel.id === 100 && travel.spaceLeft < 75 && !!user ? (
+          {!!user && user.travel?.id ? (
             <Button disabled={true}>Travel already booked</Button>
           ) : (
             <Button mode="contained" onPress={() => bookTravel()}>
@@ -151,7 +169,8 @@ const styles = StyleSheet.create({
   },
   desc: {
     marginBottom: 15,
-    fontSize: 16,
+    fontSize: 18,
+    marginTop: 20,
   },
   price: {
     marginBottom: 15,
